@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "knock-knock notify --title \"Claude Code\" \"$CLAUDE_NOTIFICATION\""
+          }
+        ]
+      }
+    ]
+  }
+}

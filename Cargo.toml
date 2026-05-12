@@ -1,0 +1,11 @@
+[package]
+name = "knock-knock"
+version = "0.1.0"
+edition = "2024"
+description = "Terminal AI agent notification tool"
+license = "MIT"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+windows-sys = { version = "0.59", features = ["Win32_System_Console"] }
+winrt-toast-reborn = "0.3"
