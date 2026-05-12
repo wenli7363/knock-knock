@@ -1,5 +1,7 @@
 # knock-knock
 
+[中文文档](README.zh-CN.md)
+
 Terminal AI agent notification tool. Get notified when your background agents need attention.
 
 ## Problem
