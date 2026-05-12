@@ -15,7 +15,7 @@ AI Agent 暂停 → hook 触发 → knock-knock notify → 桌面右下角弹出
                                                    （标题 = 终端窗口名）
 ```
 
-不轮询、不常驻、不占资源。一次 CLI 调用，弹出通知，进程退出。
+不轮询、不常驻。点击通知直接跳转回对应终端窗口。
 
 ## 安装
 
@@ -27,7 +27,7 @@ cd knock-knock
 cargo build --release
 ```
 
-产物在 `target/release/knock-knock.exe`（687KB），复制到 PATH 目录即可。
+产物在 `target/release/knock-knock.exe`（~768KB），复制到 PATH 目录即可。
 
 ### 构建依赖
 
@@ -63,6 +63,20 @@ knock-knock notify --source "claude-code" "任务已完成"
 └──────────────────────────────────────┘
 ```
 
+### 点击跳转
+
+点击通知时，knock-knock 会自动通过窗口标题匹配，把对应的终端窗口拉到前台。不用再在一堆 tab 里翻找了。
+
+进程会短暂存活（最多 60 秒）等待点击，之后自动退出。
+
+### 直接聚焦窗口
+
+也可以直接把某个终端拉到前台：
+
+```bash
+knock-knock focus --title "claude: api-migration"
+```
+
 ### 命令参考
 
 ```
@@ -75,6 +89,12 @@ knock-knock notify [OPTIONS] <MESSAGE>
   -t, --title <TITLE>    通知标题（默认自动读取终端窗口标题）
   -u, --urgent           紧急通知（持久弹窗 + 声音提醒）
   -s, --source <SOURCE>  来源标签（显示为归属文本）
+  -h, --help             显示帮助
+
+knock-knock focus --title <TITLE>
+
+选项:
+  -t, --title <TITLE>    要查找的窗口标题
   -h, --help             显示帮助
 ```
 
@@ -128,7 +148,7 @@ Tab 3: "claude: test-suite"        → 跑 Claude Code 写测试
 └──────────────────────────────────────┘
 ```
 
-看一眼就知道切哪个 tab。
+点击通知 → Tab 2 的终端窗口直接弹到前台。
 
 ## 系统要求
 
@@ -140,7 +160,7 @@ Tab 3: "claude: test-suite"        → 跑 Claude Code 写测试
 - [x] Windows Toast 桌面通知
 - [x] 自动识别终端窗口标题
 - [x] 通知分级（紧急/普通）
-- [ ] 点击通知跳转到对应终端 tab
+- [x] 点击通知跳转到对应终端窗口
 - [ ] 自定义应用标识（品牌化通知图标）
 - [ ] Daemon 模式（聚合、去重、节流）
 - [ ] 跨平台支持（macOS、Linux）

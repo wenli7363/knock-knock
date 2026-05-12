@@ -17,7 +17,7 @@ AI Agent pauses → hook triggers → knock-knock notify → Windows Toast pops 
                                                         (with terminal title)
 ```
 
-No polling. No daemon. Just a single CLI call that fires a system notification and exits.
+No polling. No daemon. Click the notification to jump straight back to that terminal.
 
 ## Install
 
@@ -29,7 +29,7 @@ cd knock-knock
 cargo build --release
 ```
 
-The binary is at `target/release/knock-knock.exe` (687KB). Copy it somewhere in your PATH.
+The binary is at `target/release/knock-knock.exe` (~768KB). Copy it somewhere in your PATH.
 
 ### Build requirements
 
@@ -65,6 +65,20 @@ When you don't pass `--title`, knock-knock reads the current terminal window tit
 └──────────────────────────────────────┘
 ```
 
+### Click to focus
+
+When you click the notification, knock-knock brings the terminal window to the foreground automatically — matching the window by its title. No more hunting through tabs.
+
+The process stays alive briefly (up to 60s) to handle the click, then exits.
+
+### Focus command
+
+You can also bring a terminal to the foreground directly:
+
+```bash
+knock-knock focus --title "claude: api-migration"
+```
+
 ### CLI reference
 
 ```
@@ -77,6 +91,12 @@ Options:
   -t, --title <TITLE>    Notification title (defaults to terminal window title)
   -u, --urgent           Mark as urgent (persistent toast with sound)
   -s, --source <SOURCE>  Source label shown as attribution text
+  -h, --help             Print help
+
+knock-knock focus --title <TITLE>
+
+Options:
+  -t, --title <TITLE>    Window title to search for
   -h, --help             Print help
 ```
 
@@ -130,7 +150,7 @@ When Tab 2 pauses for input, you get:
 └──────────────────────────────────────┘
 ```
 
-One glance, you know which tab to switch to.
+Click the notification → Tab 2 pops to the foreground.
 
 ## Requirements
 
@@ -142,7 +162,7 @@ One glance, you know which tab to switch to.
 - [x] Windows Toast notifications
 - [x] Auto-detect terminal window title
 - [x] Urgent/normal notification levels
-- [ ] Click-to-focus (jump to the right terminal tab)
+- [x] Click-to-focus (bring terminal window to foreground)
 - [ ] Custom AUMID registration (branded notifications)
 - [ ] Daemon mode (aggregation, deduplication, throttling)
 - [ ] Cross-platform (macOS, Linux)

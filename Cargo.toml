@@ -7,5 +7,9 @@ license = "MIT"
 
 [dependencies]
 clap = { version = "4", features = ["derive"] }
-windows-sys = { version = "0.59", features = ["Win32_System_Console"] }
+windows-sys = { version = "0.59", features = [
+    "Win32_System_Console",
+    "Win32_Foundation",
+    "Win32_UI_WindowsAndMessaging",
+] }
 winrt-toast-reborn = "0.3"
