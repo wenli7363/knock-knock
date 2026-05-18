@@ -44,6 +44,25 @@ enum Commands {
     },
 }
 
+const AUMID: &str = "knock-knock";
+
+fn ensure_aumid_registered() {
+    use winreg::enums::*;
+    use winreg::RegKey;
+
+    let hkcu = RegKey::predef(HKEY_CURRENT_USER);
+    let path = r"Software\Classes\AppUserModelId";
+    let app_model_id = match hkcu.create_subkey(path) {
+        Ok((key, _)) => match key.create_subkey(AUMID) {
+            Ok((app_key, _)) => app_key,
+            Err(_) => return,
+        },
+        Err(_) => return,
+    };
+
+    let _ = app_model_id.set_value("DisplayName", &"knock-knock");
+}
+
 fn get_terminal_title() -> Option<String> {
     let mut buf = [0u16; 512];
     let len = unsafe {
@@ -128,7 +147,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let tx_dismissed = tx.clone();
             let title_for_callback = title.clone();
 
-            let manager = ToastManager::new(ToastManager::POWERSHELL_AUM_ID)
+            ensure_aumid_registered();
+
+            let manager = ToastManager::new(AUMID)
                 .on_activated(None, move |_| {
                     activate_window_by_title(&title_for_callback);
                     let _ = tx_activated.send(());

@@ -12,4 +12,5 @@ windows-sys = { version = "0.59", features = [
     "Win32_Foundation",
     "Win32_UI_WindowsAndMessaging",
 ] }
+winreg = "0.52"
 winrt-toast-reborn = "0.3"
