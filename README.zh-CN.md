@@ -105,13 +105,24 @@ Claude Code 支持 [hooks](https://docs.anthropic.com/en/docs/claude-code/hooks)
 ```json
 {
   "hooks": {
-    "notification": [
+    "Stop": [
       {
-        "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "knock-knock notify \"$CLAUDE_NOTIFICATION\""
+            "command": "knock-knock notify --title \"$(basename $PWD)\" --source claude-code 'Task completed' &",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "knock-knock notify --title \"$(basename $PWD)\" --urgent --source claude-code 'Waiting for your input' &",
+            "timeout": 5
           }
         ]
       }
@@ -120,13 +131,16 @@ Claude Code 支持 [hooks](https://docs.anthropic.com/en/docs/claude-code/hooks)
 }
 ```
 
-配好之后，Claude Code 每次暂停/完成/出错都会自动弹出通知，不用再手动轮询各终端了。
+> **注意：** 命令需要在 bash 中执行（Claude Code 在 Windows/Git Bash 下的默认 shell）。不要用 `powershell` 包装——直接调用二进制文件并用 `&` 后台运行。
 
 ### 什么时候会触发通知
 
-- Agent 等待权限确认（y/n）
-- 任务完成
-- Agent 遇到错误并停止
+| Hook | 触发时机 | 紧急程度 |
+|------|---------|---------|
+| `Stop` | Claude 回复完成 | 普通 |
+| `Notification` | Claude 空闲等待用户输入 | 紧急（持久弹窗 + 声音） |
+
+通知标题显示 `$(basename $PWD)`——即当前项目目录名——让你一眼知道是哪个 tab。
 
 ## 多 Agent 工作流
 
@@ -161,7 +175,7 @@ Tab 3: "claude: test-suite"        → 跑 Claude Code 写测试
 - [x] 自动识别终端窗口标题
 - [x] 通知分级（紧急/普通）
 - [x] 点击通知跳转到对应终端窗口
-- [ ] 自定义应用标识（品牌化通知图标）
+- [x] 自定义应用标识（品牌化通知图标）
 - [ ] Daemon 模式（聚合、去重、节流）
 - [ ] 跨平台支持（macOS、Linux）
 

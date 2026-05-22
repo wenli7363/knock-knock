@@ -107,13 +107,24 @@ Claude Code supports [hooks](https://docs.anthropic.com/en/docs/claude-code/hook
 ```json
 {
   "hooks": {
-    "notification": [
+    "Stop": [
       {
-        "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "knock-knock notify \"$CLAUDE_NOTIFICATION\""
+            "command": "knock-knock notify --title \"$(basename $PWD)\" --source claude-code 'Task completed' &",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "knock-knock notify --title \"$(basename $PWD)\" --urgent --source claude-code 'Waiting for your input' &",
+            "timeout": 5
           }
         ]
       }
@@ -122,13 +133,16 @@ Claude Code supports [hooks](https://docs.anthropic.com/en/docs/claude-code/hook
 }
 ```
 
-Now whenever Claude Code pauses for input or finishes a task, you get a desktop notification with your terminal tab title — no need to keep checking manually.
+> **Note:** The command must run in bash (Claude Code's default shell on Windows/Git Bash). Do not wrap in `powershell` — call the binary directly with `&` to background it.
 
 ### What triggers notifications
 
-- Agent waiting for permission approval (y/n)
-- Task completed
-- Agent encountered an error and stopped
+| Hook | Fires when | Urgency |
+|------|-----------|---------|
+| `Stop` | Claude finishes its response | Normal |
+| `Notification` | Claude is idle waiting for your input | Urgent (persistent + sound) |
+
+The notification title shows `$(basename $PWD)` — your project directory name — so you know which tab to check.
 
 ## Multi-agent workflow
 
@@ -163,7 +177,7 @@ Click the notification → Tab 2 pops to the foreground.
 - [x] Auto-detect terminal window title
 - [x] Urgent/normal notification levels
 - [x] Click-to-focus (bring terminal window to foreground)
-- [ ] Custom AUMID registration (branded notifications)
+- [x] Custom AUMID registration (branded notifications)
 - [ ] Daemon mode (aggregation, deduplication, throttling)
 - [ ] Cross-platform (macOS, Linux)
 
